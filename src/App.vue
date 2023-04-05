@@ -1,5 +1,6 @@
 <template>
   <!-- {{LocationObject.lat}} -->
+  <!-- {{ mykey }} -->
   <div class="m-0 p-0 w-screen h-screen" id="map"></div>
   <!-- <div @click="panTo()">이동</div> -->
   <div><Dalseo :locationObject="LocationObject" @passloc="passloc($event); panTo($event)"
@@ -12,8 +13,11 @@
   export default {
   data() {
     return {
-      // 챗지피티에서 백엔드 나누고 이용한것처럼 하면 mykey를 숨길수 있을까?
-      mykey: "2c48253f67eaa4f8aa65098574b666ac",
+      // mykey를 숨길수 있을까
+      // env 환경변수를 사용하여 가져오는 방법 사용 
+      // 환경변수 사용 시 주의사항 
+      // 네이밍 규칙이 있으므로 
+      mykey: process.env.VUE_APP_API_KEY,
       // 왼쪽 시장 메뉴창 상태
       dalseomenu: false,
       LocationObject: {}
