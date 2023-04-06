@@ -43,7 +43,7 @@
     <!-- 우측 상점 정보 창 -->
     <div :class="isMarketInfoOpen ? 'right-0' : 'right-[-400px]'" class="bg-white fixed top-0 w-[400px] h-[100vh] z-50 overflow-y-scroll  transition-all duration-500">
       <div class="relative">
-        <div class="shadow-[inset_0_0_15px_#86efac] pt-7 px-6">
+        <div class="pt-7 px-6">
           <h2 class="text-xl text-center tracking-wide border-b text-blue-600">상가분류</h2>
           <ul class="flex justify-between py-2">
             <li @click="storeClassify = '전체'">전체</li>
@@ -52,17 +52,56 @@
         </div>
         <div class="pt-4 px-6">
           <h2 class="text-xl text-center tracking-wide border-b text-blue-600">상가목록</h2>
-          <ul class="flex flex-col gap-2" >
-            <li v-for="e in storeClassifyItem" :key="e" class="">
-              <div>{{ e.storeName }}</div>
-              <div>{{ e.roadNmAddr }}</div>
-              <div>{{ e.mainItem }}</div>
-              <div>추가정보 보기</div>
+          <ul class="flex flex-col gap-4" >
+            <li class="border" v-for="e in storeClassifyItem" :key="e">
+              <h3 class="text-lg">{{ e.storeName }}</h3>
+              <div class="text-sm">{{ e.roadNmAddr }}</div>
+              <div class="w-[48%] inline-block text-lg">{{ e.mainItem }}</div>
+              <div class="w-[48%] inline-block text-right mb-1">
+                <!-- Modal trigger -->
+                <button 
+                  @click="showModal = !showModal; modalStoreData = {'상점명': e.storeName, '도로명 주소': e.roadNmAddr, '지번 주소': e.lotnoAddr, 'lat':e.lat, 'lot':e.lot}"
+                  class="bg-indigo-500 hover:bg-indigo-600 focus:outline-none rounded-md px-6 py-0.5 mx-auto text-white transition duration-500 ease-in-out">추가정보 정보</button></div>
             </li>
           </ul>
         </div>
         <button @click="isMarketInfoOpen = false" class="absolute top-1 right-1">닫기</button>
       </div>
+    </div>
+
+    <!-- 각 상점 팝업창 https://tailwindcomponents.com/component/modal-7 에서 가져와서 사용해봄 -->
+    <div class="z-50">
+      
+    <div class="flex items-center justify-center absolute h-screen w-screen top-0 left-0">
+    <transition name="custom" enter-active-class="animate__animated animate__bounceInDown" leave-active-class="animate__animated animate__bounceOutUp">
+    <!-- Modal -->
+    <div v-if="showModal" class="z-[70] relative w-11/12 lg:w-full max-w-xl mx-auto bg-white flex flex-col self-center shadow-2xl rounded-md ">
+      <!-- Modal header -->
+      <div class="p-6 border-b-4 border-gray-200 text-lg font-bold text-indigo-400">{{ modalStoreData['상점명'] }}</div>
+      <!-- ./Modal header -->
+    
+      <!-- Modal body -->
+      <div class="p-6">
+        <div>{{ modalStoreData['도로명 주소'] }}</div>
+        <div>{{ modalStoreData['지번 주소'] }}</div>
+      </div>
+      <!-- ./Modal body -->
+    
+      <!-- Modal footer -->
+      <div class="border-t-4 border-gray-200 p-6 flex justify-end">
+        <button @click="showModal = false" class="bg-green-400 hover:bg-green-500 focus:outline-none px-4 py-2 rounded-md text-white transition duration-500 ease-in-out">Close Modal</button>
+      </div>
+      <!-- ./Modal footer -->
+    </div>
+    <!-- ./Modal -->
+    </transition>
+  
+    <transition name="custom" enter-active-class="animate__animated animate__fadeIn" leave-active-class="animate__animated animate__fadeOut">
+      <!-- Overlay -->
+      <div v-if="showModal" class="bg-gray-700 bg-opacity-50 fixed bottom-0 left-0 w-full h-full transition duration-500 ease-in-out transfom z-[60]"></div>
+      <!-- ./Overlay -->
+    </transition>
+    </div>
     </div>
   </div>
 </template>
@@ -84,9 +123,9 @@ export default {
       marketitemlist: [], //선택한 시장 정보
       storeClassify: '전체', //선택한 시장 상가분류
       // 레이아웃 용
-      isMarketInfoOpen: false, // 레이아웃용 (우측 시장상가정보) 
-      
-
+      isMarketInfoOpen: false, // 레이아웃용 (우측 시장상가정보),
+      showModal: false, // https://tailwindcomponents.com/component/modal-7 에서 가져온 값 사용
+      modalStoreData: {}, // 모달용 데이터(모달 클릭 시 해당 상점만 나오는거라서 filter 사용안하고 직접 데이터 지정으로 사용 filter로도 시도해보기)
     }
   },
   props: {
@@ -110,7 +149,8 @@ export default {
     getMarketInfo(name){
       // 아래 3줄은 레이아웃용 클릭 시 화면 나오고 들어가기
       if(!this.isMarketInfoOpen){
-        this.isMarketInfoOpen ? this.isMarketInfoOpen = false : this.isMarketInfoOpen = true
+        // this.isMarketInfoOpen ? this.isMarketInfoOpen = false : this.isMarketInfoOpen = true
+        this.isMarketInfoOpen = this.isMarketInfoOpen ? false : true
       }
       
       
@@ -135,7 +175,7 @@ export default {
           // 시장별 음식점 수를 집어넣어 전체 정보 불러오기
            axios.get(`https://apis.data.go.kr/3470000/dalseoMarket/viewStoreListIn${selectnameEn}?serviceKey=${this.dalseomykey}&numOfRows=${this.marketTotalCount}`)
             .then((res) => {
-              // console.log(res.data.body.items.item)
+              console.log(res.data.body.items.item)
               this.marketitemlist = res.data.body.items.item
 
             })
@@ -167,9 +207,8 @@ export default {
         } else {
           return data.storeClassify
         }
-
       })
-    }
+    },
   },
 }
 </script>
