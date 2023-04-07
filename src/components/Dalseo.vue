@@ -145,7 +145,7 @@ export default {
           // 시장별 음식점 수를 집어넣어 전체 정보 불러오기
            axios.get(`https://apis.data.go.kr/3470000/dalseoMarket/viewStoreListIn${selectnameEn}?serviceKey=${this.dalseomykey}&numOfRows=${this.marketTotalCount}`)
             .then((res) => {
-              console.log(res.data.body.items.item)
+              // console.log(res.data.body.items.item)
               this.marketitemlist = res.data.body.items.item
 
             })
