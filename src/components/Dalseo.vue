@@ -28,12 +28,12 @@
         <div class="pt-7 px-6">
           <h2 class="text-xl text-center tracking-wide">전통시장</h2>
           <ul class="mt-4 grid grid-cols-2 gap-3 text-center text-sm">
-            <li v-for="e in itemList" :key="e"
-              @click="$emit('passloc', {lat: e.lat , lot: e.lot}); getMarketInfo(e.marketName)"
+             <!-- selectedMarket = e.marketName; focusOn = !focusOn; num = index" -->
+            <li v-for="(e, index) in itemList" :key="e"
+              @click="$emit('passloc', {lat: e.lat , lot: e.lot}); getMarketInfo(e.marketName); selectMarket(index);"
+              :class="focusOn && num === index ? 'text-blue-700 font-bold' : 'text-black'"
               class="border border-blue-100 py-1 hover:font-bold">
               <div>{{ e.marketName }}</div>
-              
-              <!-- <div>{{ e.lat }}{{ e.lot }}</div> -->
             </li>
           </ul>
         </div>
@@ -68,7 +68,7 @@
         <button @click="isMarketInfoOpen = false" class="absolute top-1 right-1">닫기</button>
       </div>
     </div>
-
+    <!-- 모달창 // 지도와 Dalseo.vue 에서 받은 데이터를 활용해서 컴포넌트화 시킴 -->
     <StoreModal :showModal="showModal" :modalStoreData="modalStoreData" @closeModal="showModal = false" />
 
   </div>
@@ -91,10 +91,13 @@ export default {
       market: market, //시장별 음식점 정보 불러오기 위한 시장영어이름 json 파일
       marketitemlist: [], //선택한 시장 정보
       storeClassify: '전체', //선택한 시장 상가분류
+      modalStoreData: {}, // 모달용 데이터(모달 클릭 시 해당 상점만 나오는거라서 filter 사용안하고 직접 데이터 지정으로 사용 filter로도 시도해보기)
       // 레이아웃 용
       isMarketInfoOpen: false, // 레이아웃용 (우측 시장상가정보),
       showModal: false, // https://tailwindcomponents.com/component/modal-7 에서 가져온 값 사용
-      modalStoreData: {}, // 모달용 데이터(모달 클릭 시 해당 상점만 나오는거라서 filter 사용안하고 직접 데이터 지정으로 사용 filter로도 시도해보기)
+      // 마켓을 클릭하고 나면 클릭 된 상태 보여주기 위해
+      focusOn: false,
+      num: null
     }
   },
   props: {
@@ -116,14 +119,23 @@ export default {
       })
   },
   methods:{
+    // focusOn 이 false 인경우와 아닌경우를 나누어두지 않으면 다른 시장을 2번 클릭해야 본래 클릭되어진 시장이 원래대로 돌아오고 새로운 시장이 클릭된듯이 나타남
+    // 조건문이라서 클래스바인딩에 어떻게 조건 추가하면 될 듯하긴 하나 좀 어려워보임
+    selectMarket(i){
+      if(this.focusOn === false){
+        this.focusOn = !this.focusOn
+        this.num = i
+      } else {
+        this.num = i
+      }
+
+    },
     getMarketInfo(name){
       // 아래 3줄은 레이아웃용 클릭 시 화면 나오고 들어가기
       if(!this.isMarketInfoOpen){
         // this.isMarketInfoOpen ? this.isMarketInfoOpen = false : this.isMarketInfoOpen = true
         this.isMarketInfoOpen = this.isMarketInfoOpen ? false : true
       }
-      
-      
       // console.log(name)
       const selectname = name;
       let selectnameEn = '';
