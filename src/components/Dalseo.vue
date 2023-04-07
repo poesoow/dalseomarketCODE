@@ -69,46 +69,15 @@
       </div>
     </div>
 
-    <!-- 각 상점 팝업창 https://tailwindcomponents.com/component/modal-7 에서 가져와서 사용해봄 -->
-    <div class="z-50">
-      
-    <div class="flex items-center justify-center absolute h-screen w-screen top-0 left-0">
-    <transition name="custom" enter-active-class="animate__animated animate__bounceInDown" leave-active-class="animate__animated animate__bounceOutUp">
-    <!-- Modal -->
-    <div v-if="showModal" class="z-[70] relative w-11/12 lg:w-full max-w-xl mx-auto bg-white flex flex-col self-center shadow-2xl rounded-md ">
-      <!-- Modal header -->
-      <div class="p-6 border-b-4 border-gray-200 text-lg font-bold text-indigo-400">{{ modalStoreData['상점명'] }}</div>
-      <!-- ./Modal header -->
-    
-      <!-- Modal body -->
-      <div class="p-6">
-        <div>{{ modalStoreData['도로명 주소'] }}</div>
-        <div>{{ modalStoreData['지번 주소'] }}</div>
-      </div>
-      <!-- ./Modal body -->
-    
-      <!-- Modal footer -->
-      <div class="border-t-4 border-gray-200 p-6 flex justify-end">
-        <button @click="showModal = false" class="bg-green-400 hover:bg-green-500 focus:outline-none px-4 py-2 rounded-md text-white transition duration-500 ease-in-out">Close Modal</button>
-      </div>
-      <!-- ./Modal footer -->
-    </div>
-    <!-- ./Modal -->
-    </transition>
-  
-    <transition name="custom" enter-active-class="animate__animated animate__fadeIn" leave-active-class="animate__animated animate__fadeOut">
-      <!-- Overlay -->
-      <div v-if="showModal" class="bg-gray-700 bg-opacity-50 fixed bottom-0 left-0 w-full h-full transition duration-500 ease-in-out transfom z-[60]"></div>
-      <!-- ./Overlay -->
-    </transition>
-    </div>
-    </div>
+    <StoreModal :showModal="showModal" :modalStoreData="modalStoreData" @closeModal="showModal = false" />
+
   </div>
 </template>
 
 <script>
 import axios from 'axios'
 import market from '@/assets/MarketName.json'
+import StoreModal from '@/components/storeModal.vue'
 
 export default {
   name: 'App',
@@ -133,6 +102,7 @@ export default {
     locationObject: Object, // 시장 위치 전송
   },
   components: {
+    StoreModal
   },
   created() {
     axios.get(`https://apis.data.go.kr/3470000/dalseoMarket/viewMarketList?serviceKey=${this.dalseomykey}&pageNo=${this.pageNo}&numOfRows=${this.numOfRows}`)
