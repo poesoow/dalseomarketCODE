@@ -30,7 +30,7 @@
           <ul class="mt-4 grid grid-cols-2 gap-3 text-center text-sm">
              <!-- selectedMarket = e.marketName; focusOn = !focusOn; num = index" -->
             <li v-for="(e, index) in itemList" :key="e"
-              @click="$emit('passloc', {lat: e.lat , lot: e.lot}); getMarketInfo(e.marketName); selectMarket(index);"
+              @click="$emit('passloc', {lat: e.lat , lot: e.lot, marketName: e.marketName }); getMarketInfo(e.marketName); selectMarket(index);"
               :class="focusOn && num === index ? 'text-blue-700 font-bold' : 'text-black'"
               class="border border-blue-100 py-1 hover:font-bold">
               <div>{{ e.marketName }}</div>
