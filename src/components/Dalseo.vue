@@ -92,12 +92,12 @@ export default {
       marketitemlist: [], //선택한 시장 정보
       storeClassify: '전체', //선택한 시장 상가분류
       modalStoreData: {}, // 모달용 데이터(모달 클릭 시 해당 상점만 나오는거라서 filter 사용안하고 직접 데이터 지정으로 사용 filter로도 시도해보기)
+      // 마켓을 클릭하고 나면 클릭 된 상태 보여주기 위해
+      focusOn: false,
+      num: null,
       // 레이아웃 용
       isMarketInfoOpen: false, // 레이아웃용 (우측 시장상가정보),
       showModal: false, // https://tailwindcomponents.com/component/modal-7 에서 가져온 값 사용
-      // 마켓을 클릭하고 나면 클릭 된 상태 보여주기 위해
-      focusOn: false,
-      num: null
     }
   },
   props: {
@@ -128,7 +128,6 @@ export default {
       } else {
         this.num = i
       }
-
     },
     getMarketInfo(name){
       // 아래 3줄은 레이아웃용 클릭 시 화면 나오고 들어가기
